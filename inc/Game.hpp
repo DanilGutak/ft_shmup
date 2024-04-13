@@ -7,9 +7,12 @@
 #include <iostream>
 #include <unistd.h>
 #include <signal.h>
-
+#include <vector>
 
 #include "Player.hpp"
+#include "Enemy.hpp"
+extern int max_y, max_x;
+extern long score;
 
 #define BOLD "\033[1m"
 #define RESET "\033[0m"

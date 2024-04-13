@@ -16,13 +16,15 @@ CXXFLAGS	= -Wall -Wextra -Werror -MP -MD -std=c++98 -g -Iinc
 SRCS   	= \
 		$(SRCS_DIR)/main.cpp \
 		$(SRCS_DIR)/Player.cpp \
+		$(SRCS_DIR)/Enemy.cpp \
+		$(SRCS_DIR)/Background.cpp \
 
 OBJS		= $(SRCS:${SRCS_DIR}/%.cpp=${OBJS_DIR}/%.o)
 
 DEPS	= $(OBJS:%.o=%.d)
 
 $(NAME): $(OBJS)
-	$(CXX) $(CXXFLAGS) -lncurses -o $(NAME) $(OBJS)
+	$(CXX) $(CXXFLAGS) -lncursesw -o $(NAME) $(OBJS)
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
 	mkdir -p $(OBJS_DIR)
