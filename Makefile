@@ -18,6 +18,7 @@ SRCS   	= \
 		$(SRCS_DIR)/Player.cpp \
 		$(SRCS_DIR)/Enemy.cpp \
 		$(SRCS_DIR)/Background.cpp \
+		$(SRCS_DIR)/Bullet.cpp \
 
 OBJS		= $(SRCS:${SRCS_DIR}/%.cpp=${OBJS_DIR}/%.o)
 

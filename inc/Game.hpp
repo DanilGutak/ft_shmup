@@ -13,6 +13,8 @@
 #include "Enemy.hpp"
 extern int max_y, max_x;
 extern long score;
+#include "Bullet.hpp"
+
 
 #define BOLD "\033[1m"
 #define RESET "\033[0m"
@@ -24,5 +26,8 @@ extern long score;
 #define MAGENTA "\033[35m"
 #define CYAN "\033[36m"
 #define WHITE "\033[37m"
+
+void shoot_bullet(std::vector<Bullet> &bullets, int x, int y);
+
 
 #endif
