@@ -76,7 +76,6 @@ int main() {
     if (max_y < 20 || max_x < 36) {
         endwin();
         std::cerr << RED << "Terminal too small! Please resize to at least 36x20" << RESET << std::endl;
-        std::cerr << RED << "Terminal too small! Please resize to at least 36x20" << RESET << std::endl;
         return 1;
     }
     Player player(max_x / 2, max_y - 2);
@@ -87,13 +86,14 @@ int main() {
     create_enemies(enemies);
 	create_backgrounds(backgrounds);
 	int ch1 = '1';
+    long diffulity = 200001;
     while (1) {
         
         int ch = getch();
 		if (ch != -1) {
 			ch1 = ch;
 		}
-		if (score % 100000 == 0)
+		if (score % diffulity == 0)
 		{
 			werase(stdscr);
 			refresh();
@@ -107,13 +107,17 @@ int main() {
 			mvprintw(player.getY(), player.getX(), PLAYER_SYMBOL);
 			print_passed_time(start_time);
 			print_health(player.getHP());
-			if (ch1 == 'w' || ch1 == 'a' || ch1 == 's' || ch1 == 'd')
+            mvprintw(1, 1, "Score: %ld", diffulity - 1);
+			if (ch1 == 'w' || ch1 == 'a' || ch1 == 's' || ch1 == 'd') {
 				player.move(ch1);
+                ch1 = '1';
+            }
 			if (ch1 == 'q' || resize_flag) {
 				break;
 			}
 			if (ch1 ==' ') {
 				shoot_bullet(bullets, player.getX(), player.getY() - 1);
+			    ch1 = '1';
 			}
 			for (unsigned long i = 0; i < bullets.size(); i++) {
 				bullets[i].move();
@@ -122,8 +126,8 @@ int main() {
 				}
 				bullets[i].print();
 			refresh();
-			ch1 = '1';
-        }
+            }
+            diffulity -= 50;
 		}
         // wbkgd(stdscr, COLOR_PAIR(1));
 		score++;
