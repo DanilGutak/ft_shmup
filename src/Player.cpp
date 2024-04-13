@@ -1,6 +1,7 @@
 #include "../inc/Game.hpp"
 #include "../inc/Player.hpp"
 
+#include <cstdlib>
 
 void Player::move(int key) {
 	switch (key) {
@@ -28,7 +29,7 @@ void Player::move(int key) {
 }
 
 bool Player::check_collision(int x, int y) {
-	if (this->x == x && this->y == y) {
+	if (abs(this->x - x) <= 1 && this->y == y) {
 		this->hp -= 1;
 		return true;
 	}

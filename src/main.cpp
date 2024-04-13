@@ -11,9 +11,9 @@ void print_passed_time(int start_time) {
 }
 
 void print_health(int hp) {
-    for (int i = 0; i < hp; i++) {
-        mvprintw(LINES - 1, i + 1, "H");
-    }
+    // for (int i = 0; i < hp; i++) {
+        mvprintw(LINES - 1, 1,"%d", hp);
+    // }
 }
 
 int resize_flag = 0;
@@ -86,7 +86,7 @@ int main() {
     create_enemies(enemies);
 	create_backgrounds(backgrounds);
 	int ch1 = '1';
-    long diffulity = 200001;
+    long diffulity = 300001;
     while (1) {
         
         int ch = getch();
@@ -106,8 +106,15 @@ int main() {
 			// mvprintw(0, 0, "x: %d, y: %d", max_x, max_y);
 			mvprintw(player.getY(), player.getX(), PLAYER_SYMBOL);
 			print_passed_time(start_time);
+            for (unsigned long i = 0; i < enemies.size(); i++) {
+                player.check_collision(enemies[i].getX(), enemies[i].getY());
+            }
 			print_health(player.getHP());
             mvprintw(1, 1, "Score: %ld", diffulity - 1);
+            if (player.getHP() <= 9) {
+                std::cerr << RED << "Game Over!" << RESET << std::endl;
+                break;
+            }
 			if (ch1 == 'w' || ch1 == 'a' || ch1 == 's' || ch1 == 'd') {
 				player.move(ch1);
                 ch1 = '1';
@@ -127,7 +134,7 @@ int main() {
 				bullets[i].print();
 			refresh();
             }
-            diffulity -= 50;
+            // diffulity -= 50;
 		}
         // wbkgd(stdscr, COLOR_PAIR(1));
 		score++;
