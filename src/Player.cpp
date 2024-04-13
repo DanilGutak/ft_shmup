@@ -7,25 +7,21 @@ void Player::move(int key) {
 		case 'w':
 			if (y > 1) {
 				y--;
-				mvprintw(y + 1, x, " ");
 			}
 			break;
 		case 's':
 			if (y < LINES - 2) {
 				y++;
-				mvprintw(y - 1, x, " ");
 			}
 			break;
 		case 'a':
 			if (x > 1) {
 				x--;
-				mvprintw(y, x + 1, " ");
 			}
 			break;
 		case 'd':
 			if (x < COLS - 2) {
 				x++;
-				mvprintw(y, x - 1, " ");
 			}
 			break;
 	}

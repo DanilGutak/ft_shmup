@@ -86,47 +86,46 @@ int main() {
 	std::vector<Background> backgrounds;
     create_enemies(enemies);
 	create_backgrounds(backgrounds);
-
+	int ch1 = '1';
     while (1) {
         
-        // wbkgd(stdscr, COLOR_PAIR(1));
-        wattron(stdscr, COLOR_PAIR(1));
-        wborder(stdscr, '|', '|', '-', '-', '*', '*', '*', '*');
-        wattroff(stdscr, COLOR_PAIR(1));
-        // print x and y on the screen
-        // mvprintw(0, 0, "x: %d, y: %d", max_x, max_y);
-        mvprintw(player.getY(), player.getX(), PLAYER_SYMBOL);
-        print_passed_time(start_time);
-        print_health(player.getHP());
         int ch = getch();
-        player.move(ch);
-        if (ch == 'q' || resize_flag) {
-            break;
+		if (ch != -1) {
+			ch1 = ch;
+		}
+		if (score % 100000 == 0)
+		{
+			werase(stdscr);
+			refresh();
+			move_backgrounds(backgrounds);
+			move_enemies(enemies);
+			wattron(stdscr, COLOR_PAIR(1));
+			wborder(stdscr, '|', '|', '-', '-', '*', '*', '*', '*');
+			wattroff(stdscr, COLOR_PAIR(1));
+			// print x and y on the screen
+			// mvprintw(0, 0, "x: %d, y: %d", max_x, max_y);
+			mvprintw(player.getY(), player.getX(), PLAYER_SYMBOL);
+			print_passed_time(start_time);
+			print_health(player.getHP());
+			if (ch1 == 'w' || ch1 == 'a' || ch1 == 's' || ch1 == 'd')
+				player.move(ch1);
+			if (ch1 == 'q' || resize_flag) {
+				break;
+			}
+			if (ch1 ==' ') {
+				shoot_bullet(bullets, player.getX(), player.getY() - 1);
+			}
+			for (unsigned long i = 0; i < bullets.size(); i++) {
+				bullets[i].move();
+				if (bullets[i].getY() < 0) {
+					bullets.erase(bullets.begin() + i);
+				}
+				bullets[i].print();
+			refresh();
+			ch1 = '1';
         }
-        werase(stdscr);
-		clear();
-		move_backgrounds(backgrounds);
-		move_enemies(enemies);
-        int ch1 = getch();
-        int ch2 = getch();
-        if (ch1 == 'q') {
-        if (ch ==' ') {
-			shoot_bullet(bullets, player.getX(), player.getY() - 1);
-        }
-        // if (resize_flag) {
-        //     break;
-        // }
-        for (unsigned long i = 0; i < bullets.size(); i++) {
-            bullets[i].move();
-            if (bullets[i].getY() < 0) {
-                bullets.erase(bullets.begin() + i);
-            }
-            bullets[i].print();
-        }
-        wrefresh(stdscr);
-        
-        refresh();
-		usleep(100000);
+		}
+        // wbkgd(stdscr, COLOR_PAIR(1));
 		score++;
     }
     // End ncurses mode

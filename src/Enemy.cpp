@@ -49,12 +49,10 @@ std::string Enemy::getSymbol() {
 }
 Enemy::~Enemy() {
     //erase enemy
-    mvprintw(y, x, " ");
     return;
 }
 void Enemy::move() {
     //erase enemy
-    mvprintw(y, x, " ");
     //move enemy
     if (type == 1)
     {
@@ -84,15 +82,10 @@ void Enemy::move() {
         if (this->status == 0)
         {
             this->status = 1;
-            for (int i = -1; i < 2; i++)
-                for (int j = -1; j < 2; j++)
-                    mvprintw(y + i, x + j, " ");
-            mvprintw(y, x + 1, " ");
         }
         else
         {
             this->status = 1;
-            mvprintw(y, x, " ");
         }
         if (y < max_y)
             y += 1;
