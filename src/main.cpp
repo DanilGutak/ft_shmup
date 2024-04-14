@@ -12,9 +12,15 @@ void print_passed_time(int start_time) {
 }
 
 void print_health(int hp) {
-    for (int i = 0; i < hp; i++) {
-        mvprintw((max_y / 2) + i , 0,"🧡");
-    }
+	int i = 0;
+	while (i < hp){
+        mvprintw((max_y / 2) + i , 0,"💟");
+		i++;
+	}
+	while (i < 10) {
+		mvprintw((max_y / 2) + i , 0,"💔");
+		i++;
+	}
 }
 
 int resize_flag = 0;
@@ -160,7 +166,10 @@ int main() {
 			move_backgrounds(backgrounds);
 			move_enemies(enemies, bullets);
 			print_boder();
-			mvprintw(player.getY(), player.getX(), "🚀");
+			if (player.getInvincible() == true)
+				mvprintw(player.getY(), player.getX(), " ");
+			else
+				mvprintw(player.getY(), player.getX(), "🚀");
 			for (int i = 0; i < max_y; i++) {
 				mvprintw(i, 1, " ");
 				mvprintw(i, max_x - 2, " ");
