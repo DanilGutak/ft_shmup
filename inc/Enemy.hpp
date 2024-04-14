@@ -3,6 +3,8 @@
 #ifndef ENEMY_HPP
 #define ENEMY_HPP
 
+#include "Bullet.hpp"
+class Bullet;
 class Enemy
 {
     public:
@@ -16,6 +18,7 @@ class Enemy
         void setY(int y);
         void setX(int x);
         void setSymbol(std::string symbol);
+        void shoot(std::vector<Bullet> &bullets);
     private:
         int x, y;
         const int type;
