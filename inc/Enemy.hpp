@@ -21,7 +21,7 @@ class Enemy
         void shoot(std::vector<Bullet> &bullets);
     private:
         int x, y;
-        const int type;
+        int type;
         int status;
         std::string symbol;
 };

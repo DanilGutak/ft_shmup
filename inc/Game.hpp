@@ -27,7 +27,7 @@ extern long score;
 #define CYAN "\033[36m"
 #define WHITE "\033[37m"
 
-void shoot_bullet(std::vector<Bullet> &bullets, int x, int y);
+void shoot_bullet(std::vector<Bullet> &bullets, int x, int y, std::string who_shot);
 
 
 #endif

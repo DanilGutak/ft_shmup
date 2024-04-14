@@ -8,12 +8,12 @@ int max_y, max_x;
 long score = 0;
 void print_passed_time(int start_time) {
     int passed_time = time(NULL) - start_time;
-    mvprintw(LINES - 1, COLS - 20, "Time: %d min. %d sec.", passed_time / 60, passed_time % 60);
+    mvprintw(max_y - 1, max_x - 50, "Time: %d yr. %d mo. %d wk. %d d. %d h. %d min. %d sec.", passed_time / 525960, passed_time / 43200, passed_time / 10080, passed_time / 1440, passed_time / 360, passed_time / 60, passed_time % 60);
 }
 
 void print_health(int hp) {
     for (int i = 0; i < hp; i++) {
-        mvprintw(LINES - 1, i + 1, "H");
+        mvprintw((max_y / 2) + i , 0,"🧡");
     }
 }
 
@@ -61,6 +61,27 @@ void create_backgrounds(std::vector<Background> &backgrounds) {
 		
 	}
 }
+
+void check_for_enemy_hit_player(std::vector<Enemy> &enemies, Player &player, int score) {
+	for (unsigned long i = 0; i < enemies.size(); i++) {
+		if (player.check_collision(enemies[i].getX(), enemies[i].getY()) == true && (score - player.get_score() > 1100000)) {
+			player.looseHP();
+			player.setInvincible(true);
+			player.set_score(score);
+			// enemies.erase(enemies.begin() + i);
+		}
+	}
+	if (score - player.get_score() > 1500000) {
+		player.setInvincible(false);
+	}
+}
+
+void print_boder() {
+	wattron(stdscr, COLOR_PAIR(1));
+	wborder(stdscr, '|', '|', '-', '-', '*', '*', '*', '*');
+	wattroff(stdscr, COLOR_PAIR(1));
+}
+
 int main() {
     // Initialize ncurses
     srand (time(NULL));
@@ -96,7 +117,8 @@ int main() {
 	int ch1 = '1';
     long difficulty = 300000;
 	long ndifficulty = difficulty;
-    while (1) {
+	player.set_score(score);
+    while (1 && player.getHP() > 0) {
         
         int ch = getch();
 		if (ch != -1) {
@@ -108,22 +130,24 @@ int main() {
 			refresh();
 
 			move_backgrounds(backgrounds);
-			move_enemies(enemies, bullets);
-			wattron(stdscr, COLOR_PAIR(1));
-			wborder(stdscr, '|', '|', '-', '-', '*', '*', '*', '*');
-			wattroff(stdscr, COLOR_PAIR(1));
-			// paint first column with white
-
-			// print x and y on the screen
+			move_enemies(enemies);
+			print_boder();
+			if (player.getInvincible() == false)
+				mvprintw(player.getY(), player.getX(), "🚀");
+			else {
+				for (int i = 0; i < 200000; i++)
+					if (i % 100000 == 0)
+						mvprintw(player.getY(), player.getX(), " ");
+					else
+						mvprintw(player.getY(), player.getX(), "🚀");
+			}
 			for (int i = 0; i < max_y; i++) {
 				mvprintw(i, 1, " ");
 				mvprintw(i, max_x - 2, " ");
 
 			}
-			// mvprintw(0, 0, "x: %d, y: %d", max_x, max_y);
-			mvprintw(player.getY(), player.getX(), PLAYER_SYMBOL);
-			refresh();
 			print_passed_time(start_time);
+			check_for_enemy_hit_player(enemies, player, score);
 			print_health(player.getHP());
             mvprintw(1, 1, "Score: %ld", score);
 			mvprintw(2, 1, "diff: %ld", ndifficulty);
@@ -136,14 +160,23 @@ int main() {
 				break;
 			}
 			if (ch1 ==' ') {
-				shoot_bullet(bullets, player.getX(), player.getY() - 1);
+				shoot_bullet(bullets, player.getX(), player.getY() - 1, "player");
 			    ch1 = '1';
 			}
 			attron(COLOR_PAIR(1)); // Change color to red
 
 			for (unsigned long i = 0; i < bullets.size(); i++) {
+				for (unsigned long j = 0; j < enemies.size(); j++) {
+					if (bullets[i].check_collision(enemies[j].getX(), enemies[j].getY())) {
+						if (enemies[j].getType() != 3) {
+							enemies.erase(enemies.begin() + j);
+						}
+						bullets.erase(bullets.begin() + i);
+						break;
+					}
+				}
 				bullets[i].move();
-				if (bullets[i].getY() < 0) {
+				if (bullets[i].getY() < 0 || bullets[i].getY() > max_y - 1){
 					bullets.erase(bullets.begin() + i);
 				}
 				bullets[i].print();
@@ -159,6 +192,9 @@ int main() {
     endwin();
     if (resize_flag == 1) {
         std::cerr << RED << "Resized! Don't do it again....." << RESET <<std::endl;
+    }
+	if (player.getHP() <= 0) {
+        std::cerr << RED << "Game Over!" << RESET << std::endl;
     }
     return 0;
 }

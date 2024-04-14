@@ -1,6 +1,7 @@
 #include "../inc/Game.hpp"
 #include "../inc/Player.hpp"
 
+#include <cstdlib>
 
 void Player::move(int key) {
 	switch (key) {
@@ -15,7 +16,7 @@ void Player::move(int key) {
 			}
 			break;
 		case 'a':
-			if (x > 1) {
+			if (x > 2) {
 				x--;
 			}
 			break;
@@ -28,8 +29,8 @@ void Player::move(int key) {
 }
 
 bool Player::check_collision(int x, int y) {
-	if (this->x == x && this->y == y) {
-		this->hp -= 1;
+	if (abs(this->x - x) <= 1 && this->y == y) {
+		// this->hp -= 1;
 		return true;
 	}
 	return false;
@@ -48,3 +49,22 @@ int Player::getHP() {
 	return hp;
 }
 
+void Player::looseHP() {
+	hp--;
+}
+
+void Player::setInvincible(bool invincible) {
+	this->invincible = invincible;
+}
+
+void Player::set_score(int score) {
+	this->score = score;
+}
+
+int Player::get_score() {
+	return score;
+}
+
+bool Player::getInvincible() {
+	return invincible;
+}
