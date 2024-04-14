@@ -116,7 +116,7 @@ void Enemy::move() {
     }
     else if (type == 4)
     {
-        if (score % 3 == 0)
+        if (score % 6 == 0)
         {
             if (y < max_y && x < max_x)
                 y += 1;
@@ -137,7 +137,7 @@ void Enemy::move() {
 void Enemy::shoot(std::vector<Bullet> &bullets) {
     if (type == 4)
     {
-        Bullet bullet(x, y + 1, "enemy");
+        Bullet bullet(x, y + 2, "enemy");
         bullets.push_back(bullet);
     }
     return;

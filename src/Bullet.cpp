@@ -12,7 +12,7 @@ void Bullet::print()
 {
 	if (y > 0)
 		mvprintw(y, x, "H");
-	mvprintw(y + 1, x, " ");
+	mvprintw(y - 1, x, " ");
 }
 
 void Bullet::move()

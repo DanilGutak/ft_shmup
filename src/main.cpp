@@ -35,14 +35,14 @@ void create_enemies(std::vector<Enemy> &enemies) {
 			enemies.push_back(Enemy(i,(rand() % max_y) * -1, 3));
 		else if (type == 4)
 			enemies.push_back(Enemy(i,(rand() % max_y) * -1, 4));
-        i += max_x / 10;
+        i += max_x / 20;
     }
 }
 void move_enemies(std::vector<Enemy> &enemies, std::vector<Bullet> &bullets) {
     for (unsigned int i = 0; i < enemies.size(); i++) {
         enemies[i].move();
-		if (score % 100 == 0)
-		enemies[i].shoot(bullets);
+		if (rand()%9 == 0)
+			enemies[i].shoot(bullets);
     }
 }
 void move_backgrounds(std::vector<Background> &backgrounds) {
@@ -64,7 +64,20 @@ void create_backgrounds(std::vector<Background> &backgrounds) {
 
 void check_for_enemy_hit_player(std::vector<Enemy> &enemies, Player &player, int score) {
 	for (unsigned long i = 0; i < enemies.size(); i++) {
-		if (player.check_collision(enemies[i].getX(), enemies[i].getY()) == true && (score - player.get_score() > 1100000)) {
+		if (enemies[i].getType() == 3){
+			// check in 3x3 area
+			for (int j = -1; j < 2; j++) {
+				for (int k = -1; k < 2; k++) {
+					if (player.check_collision(enemies[i].getX() + k, enemies[i].getY() + j) == true && (score - player.get_score() > 1100000)) {
+						player.looseHP();
+						player.setInvincible(true);
+						player.set_score(score);
+						// enemies.erase(enemies.begin() + i);
+					}
+				}
+			}
+		}
+		else if (player.check_collision(enemies[i].getX(), enemies[i].getY()) == true && (score - player.get_score() > 1100000)) {
 			player.looseHP();
 			player.setInvincible(true);
 			player.set_score(score);
@@ -176,9 +189,9 @@ int main() {
 				if (bullets[i].getY() <= 0 || bullets[i].getY() > max_y - 1){
 					bullets.erase(bullets.begin() + i);
 				}
-				// if (i >= bullets.size()) {
-				// 	break;
-				// }
+				if (i >= bullets.size()) {
+					break;
+				}
 				check_for_bullet_hit_player(bullets, player);
 				for (unsigned long j = 0; j < enemies.size(); j++) {
 					if (bullets[i].check_collision(enemies[j].getX(), enemies[j].getY())) {
