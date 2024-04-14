@@ -17,9 +17,9 @@ class Bullet
         bool check_collision(int x, int y);
         int getX();
         int getY();
+        std::string who_shot;
     private:
         int x, y;
-        std::string who_shot;
 };
 
 // void shoot_bullet(std::vector<Bullet> &bullets, int x, int y);

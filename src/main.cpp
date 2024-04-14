@@ -136,6 +136,7 @@ int main() {
 
     bkgd(COLOR_PAIR(2));
     int start_time = time(NULL);
+	int kills = 0;
     getmaxyx(stdscr, max_y, max_x);
     if (max_y < 20 || max_x < 36) {
         endwin();
@@ -179,7 +180,7 @@ int main() {
 			print_passed_time(start_time);
 			check_for_enemy_hit_player(enemies, player, score);
 			print_health(player.getHP());
-            mvprintw(1, 1, "Score: %ld", real_score/100000);
+            mvprintw(0, 3, "Score: %ld", real_score/100000);
 			if (ndifficulty > 300000)
 				mvprintw(2, 1, "Difficulty: Easy");
 			else if (ndifficulty > 200000)
@@ -200,6 +201,12 @@ int main() {
 				shoot_bullet(bullets, player.getX(), player.getY() - 1, "player");
 			    ch1 = '1';
 			}
+			if (ch1 == 'p') {
+				while (getch() != 'p' || resize_flag == 1) {
+					mvprintw(max_y/3, max_x/2, "Paused");
+				}
+				ch1 = '1';
+			}
 			attron(COLOR_PAIR(1)); // Change color to red
 			for (unsigned long i = 0; i < bullets.size(); i++) {
 				if (bullets[i].getY() <= 0 || bullets[i].getY() > max_y - 1){
@@ -211,8 +218,11 @@ int main() {
 				check_for_bullet_hit_player(bullets, player);
 				for (unsigned long j = 0; j < enemies.size(); j++) {
 					if (bullets[i].check_collision(enemies[j].getX(), enemies[j].getY())) {
-						if (enemies[j].getType() != 3) {
+						if (enemies[j].getType() != 3 && bullets[i].who_shot == "player") {
 							real_score += enemies[j].getType() * 10000000;
+							// if (bullet.get_who_shot() == "player")
+							// 	kills++;
+							kills++;
 							enemies.erase(enemies.begin() + j);
 							create_enemies(enemies, 1);
 						}
@@ -245,8 +255,9 @@ int main() {
 		else if (player.getHP() > 0)
 			mvprintw(max_y / 2, max_x / 3, "You Quit! Why?!");
 		mvprintw(max_y / 2 + 1, max_x / 3, "Score: %ld", real_score/100000);
-		mvprintw(max_y / 2 + 2, max_x / 3, "Press q to exit");
-		mvprintw(max_y / 2 + 3, max_x / 3, "Press r to restart");
+		mvprintw(max_y / 2 + 2, max_x / 3, "Kills: %d", kills);
+		mvprintw(max_y / 2 + 3, max_x / 3, "Press q to exit");
+		mvprintw(max_y / 2 + 4, max_x / 3, "Press r to restart");
 		print_boder();
 		while(1)
 		{
