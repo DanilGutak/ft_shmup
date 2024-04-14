@@ -5,12 +5,11 @@
 void shoot_bullet(std::vector<Bullet> &bullets, int x, int y, std::string who_shot)
 {
 	bullets.push_back(Bullet(x, y, who_shot));
-	mvprintw(y, x, "|");
 }
 
 void Bullet::print()
 {
-	if (y > 0)
+	if (y > 0 && y < max_y -1)
 	{
 		if (this->who_shot == "player")
 			mvprintw(y, x, "🠵");

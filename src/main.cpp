@@ -14,11 +14,11 @@ void print_passed_time(int start_time) {
 void print_health(int hp) {
 	int i = 0;
 	while (i < hp){
-        mvprintw((max_y / 2) + i , 0,"💟");
+        mvprintw((max_y / 3) + i , 0,"💟");
 		i++;
 	}
 	while (i < 10) {
-		mvprintw((max_y / 2) + i , 0,"💔");
+		mvprintw((max_y / 3) + i , 0,"💔");
 		i++;
 	}
 }
@@ -30,7 +30,7 @@ void handle_resize(int sig) {
 }
 
 void create_enemies(std::vector<Enemy> &enemies, int number) {
-    int i = 2;
+    int i = 4;
     while (i < max_x - 2) {
 		// 1 - normal, 2 - diagonal, 3 - bomb, 4 - shooter
 		// chanses 1 - 40%, 2 - 30%, 3 - 10%, 4 - 20%
@@ -132,15 +132,16 @@ int main() {
     nodelay(stdscr, TRUE);
 
 	init_pair(2, COLOR_BLACK, COLOR_WHITE);
+	init_pair(3, COLOR_WHITE, COLOR_WHITE);
 	 // White on white
 
     bkgd(COLOR_PAIR(2));
     int start_time = time(NULL);
 	int kills = 0;
     getmaxyx(stdscr, max_y, max_x);
-    if (max_y < 20 || max_x < 36) {
+    if (max_y < 20 || max_x < 100) {
         endwin();
-        std::cerr << RED << "Terminal too small! Please resize to at least 36x20" << RESET << std::endl;
+        std::cerr << RED << "Terminal too small! Please resize to at least 100x20" << RESET << std::endl;
         return 1;
     }
     Player player(max_x / 2, max_y - 2);
@@ -155,6 +156,7 @@ int main() {
 	long ndifficulty = difficulty;
 	player.set_score(score);
 	long real_score = 0;
+	int ammo = 20;
     while (1 && player.getHP() > 0) {
         
         int ch = getch();
@@ -163,6 +165,8 @@ int main() {
 		}
 		if (score % ndifficulty == 0)
 		{
+			if (rand() % 50 == 0 && ammo < 20)
+				ammo++;
 			werase(stdscr);
 			refresh();
 			move_backgrounds(backgrounds);
@@ -181,14 +185,16 @@ int main() {
 			check_for_enemy_hit_player(enemies, player, score);
 			print_health(player.getHP());
             mvprintw(0, 3, "Score: %ld", real_score/100000);
+			mvprintw(0, 85, "Kills: %d", kills);
+			mvprintw(0, 65, "Ammo: %d", ammo);
 			if (ndifficulty > 300000)
-				mvprintw(2, 1, "Difficulty: Easy");
+				mvprintw(0, 30, "Difficulty: Easy");
 			else if (ndifficulty > 200000)
-				mvprintw(2, 1, "Difficulty: Normal");
-			else if (ndifficulty > 100000)
-				mvprintw(2, 1, "Difficulty: Hard");
+				mvprintw(0, 30, "Difficulty: Normal");
+			else if (ndifficulty > 150000)
+				mvprintw(0, 30, "Difficulty: Hard");
 			else
-				mvprintw(2, 1, "Difficulty: Insane");
+				mvprintw(0, 30, "Difficulty: Insane");
 
 			player.move(ch1);
 			if (ch1 == 'w' || ch1 == 'a' || ch1 == 's' || ch1 == 'd') {
@@ -197,15 +203,10 @@ int main() {
 			if (ch1 == 'q' || resize_flag) {
 				break;
 			}
-			if (ch1 ==' ' && player.getY() > 1) {
+			if (ch1 ==' ' && player.getY() > 1 && ammo > 0) {
 				shoot_bullet(bullets, player.getX(), player.getY() - 1, "player");
 			    ch1 = '1';
-			}
-			if (ch1 == 'p') {
-				while (getch() != 'p' || resize_flag == 1) {
-					mvprintw(max_y/3, max_x/2, "Paused");
-				}
-				ch1 = '1';
+				ammo--;
 			}
 			attron(COLOR_PAIR(1)); // Change color to red
 			for (unsigned long i = 0; i < bullets.size(); i++) {
@@ -225,8 +226,8 @@ int main() {
 							kills++;
 							enemies.erase(enemies.begin() + j);
 							create_enemies(enemies, 1);
+							bullets.erase(bullets.begin() + i);
 						}
-						bullets.erase(bullets.begin() + i);
 						break;
 					}
 				}
@@ -238,8 +239,13 @@ int main() {
             }
 			attroff(COLOR_PAIR(1));
             ndifficulty = std::max(1L, static_cast<long>(difficulty * exp(-0.000000005 * score)));
+			if (ch1 == 'p') {
+				while (getch() != 'p' || resize_flag == 1) {
+					mvprintw(max_y/3, max_x/2, "Paused");
+				}
+				ch1 = '1';
+			}
 		}
-        // wbkgd(stdscr, COLOR_PAIR(1));
 		score++;
 		real_score++;
     }
@@ -256,8 +262,17 @@ int main() {
 			mvprintw(max_y / 2, max_x / 3, "You Quit! Why?!");
 		mvprintw(max_y / 2 + 1, max_x / 3, "Score: %ld", real_score/100000);
 		mvprintw(max_y / 2 + 2, max_x / 3, "Kills: %d", kills);
-		mvprintw(max_y / 2 + 3, max_x / 3, "Press q to exit");
-		mvprintw(max_y / 2 + 4, max_x / 3, "Press r to restart");
+		if (ndifficulty > 300000)
+			mvprintw(max_y / 2 + 3, max_x / 3, "Difficulty: Easy");
+		else if (ndifficulty > 200000)
+			mvprintw(max_y / 2 + 3, max_x / 3, "Difficulty: Normal");
+		else if (ndifficulty > 150000)
+			mvprintw(max_y / 2 + 3, max_x / 3, "Difficulty: Hard");
+		else
+			mvprintw(max_y / 2 + 3, max_x / 3, "Difficulty: Insane");
+
+		mvprintw(max_y / 2 + 4, max_x / 3, "Press q to exit");
+		mvprintw(max_y / 2 + 5, max_x / 3, "Press r to restart");
 		print_boder();
 		while(1)
 		{
@@ -271,8 +286,8 @@ int main() {
 			}
 			
 		}
-		endwin();
 	}
+	endwin();
     return 0;
 }
 

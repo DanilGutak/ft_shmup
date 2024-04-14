@@ -65,7 +65,7 @@ void Enemy::move() {
         else
         {
             y = 0;
-            x = rand() % max_x;
+            x = std::min(rand() % max_x + 5, max_x - 5);    
         }
     }
     else if (type == 2)
@@ -78,7 +78,7 @@ void Enemy::move() {
         else
         {
             y = 0;
-            x = rand() % max_x;
+            x = std::min(rand() % max_x + 5, max_x - 5);
         }
     }
     else if (type == 3)
@@ -119,11 +119,14 @@ void Enemy::move() {
         if (score % 6 == 0)
         {
             if (y < max_y && x < max_x)
+            {
                 y += 1;
+                x += rand() % 5 - 2;
+            }               
             else
             {
                 y = 0;
-                x = rand() % max_x;
+                x = std::min(rand() % max_x + 5, max_x - 5);
             }
         }
 
