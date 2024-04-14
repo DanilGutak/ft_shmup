@@ -166,7 +166,7 @@ int main() {
 			move_enemies(enemies, bullets);
 			print_boder();
 			if (player.getInvincible() == true)
-				mvprintw(player.getY(), player.getX(), " ");
+				mvprintw(player.getY(), player.getX(), "🛡");
 			else
 				mvprintw(player.getY(), player.getX(), "🚀");
 			for (int i = 0; i < max_y; i++) {
@@ -199,7 +199,6 @@ int main() {
 			    ch1 = '1';
 			}
 			attron(COLOR_PAIR(1)); // Change color to red
-
 			for (unsigned long i = 0; i < bullets.size(); i++) {
 				if (bullets[i].getY() <= 0 || bullets[i].getY() > max_y - 1){
 					bullets.erase(bullets.begin() + i);
@@ -219,7 +218,6 @@ int main() {
 						break;
 					}
 				}
-				
 				if (i >= bullets.size()) {
 					break;
 				}
