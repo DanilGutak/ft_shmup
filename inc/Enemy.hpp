@@ -18,7 +18,7 @@ class Enemy
         void setSymbol(std::string symbol);
     private:
         int x, y;
-        const int type;
+        int type;
         int status;
         std::string symbol;
 };

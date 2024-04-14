@@ -1,15 +1,15 @@
 #include "../inc/Game.hpp"
 
-void shoot_bullet(std::vector<Bullet> &bullets, int x, int y)
+void shoot_bullet(std::vector<Bullet> &bullets, int x, int y, std::string who_shot)
 {
-	bullets.push_back(Bullet(x, y, "player"));
+	bullets.push_back(Bullet(x, y, who_shot));
 	mvprintw(y, x, "|");
 }
 
 void Bullet::print()
 {
 	if (y > 0)
-		mvprintw(y, x, "|");
+		mvprintw(y, x, "H");
 	mvprintw(y + 1, x, " ");
 }
 
