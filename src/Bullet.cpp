@@ -1,5 +1,7 @@
 #include "../inc/Game.hpp"
 
+#include <cstdlib>
+
 void shoot_bullet(std::vector<Bullet> &bullets, int x, int y, std::string who_shot)
 {
 	bullets.push_back(Bullet(x, y, who_shot));
@@ -33,7 +35,7 @@ int Bullet::getY()
 
 bool Bullet::check_collision(int x, int y) //if bullet is at x, y return true
 {
-	if (this->x == x && this->y == y)
+	if (abs(this->x - x) <= 1 && this->y == y)
 		return true;
 	return false;
 }

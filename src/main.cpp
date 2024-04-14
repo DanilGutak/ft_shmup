@@ -151,13 +151,19 @@ int main() {
 			if (ch1 == 'q' || resize_flag) {
 				break;
 			}
-			if (ch1 ==' ') {
+			if (ch1 ==' ' && player.getY() > 1) {
 				shoot_bullet(bullets, player.getX(), player.getY() - 1, "player");
 			    ch1 = '1';
 			}
 			attron(COLOR_PAIR(1)); // Change color to red
 
 			for (unsigned long i = 0; i < bullets.size(); i++) {
+				if (bullets[i].getY() <= 0 || bullets[i].getY() > max_y - 1){
+					bullets.erase(bullets.begin() + i);
+				}
+				// if (i >= bullets.size()) {
+				// 	break;
+				// }
 				for (unsigned long j = 0; j < enemies.size(); j++) {
 					if (bullets[i].check_collision(enemies[j].getX(), enemies[j].getY())) {
 						if (enemies[j].getType() != 3) {
@@ -167,10 +173,10 @@ int main() {
 						break;
 					}
 				}
-				bullets[i].move();
-				if (bullets[i].getY() < 0 || bullets[i].getY() > max_y - 1){
-					bullets.erase(bullets.begin() + i);
+				if (i >= bullets.size()) {
+					break;
 				}
+				bullets[i].move();
 				bullets[i].print();
 			refresh();
             }
