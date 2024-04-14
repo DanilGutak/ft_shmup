@@ -32,16 +32,18 @@ void handle_resize(int sig) {
 void create_enemies(std::vector<Enemy> &enemies, int number) {
     int i = 2;
     while (i < max_x - 2) {
-		int type = rand() % 4 + 1;
-		if (type == 1)
+		// 1 - normal, 2 - diagonal, 3 - bomb, 4 - shooter
+		// chanses 1 - 40%, 2 - 30%, 3 - 10%, 4 - 20%
+		int type = rand() % 10;
+		if (type < 4)
 			enemies.push_back(Enemy(i,(rand() % max_y) * -1, 1));
-		else if (type == 2)
+		else if (type < 7)
 			enemies.push_back(Enemy(i,(rand() % max_y) * -1, 2));
-		else if (type == 3)
+		else if (type < 8)
 			enemies.push_back(Enemy(i,(rand() % max_y) * -1, 3));
-		else if (type == 4)
+		else
 			enemies.push_back(Enemy(i,(rand() % max_y) * -1, 4));
-        i += max_x / number;
+		i += max_x / number;
     }
 }
 void move_enemies(std::vector<Enemy> &enemies, std::vector<Bullet> &bullets) {
@@ -232,20 +234,24 @@ int main() {
 		real_score++;
     }
     // End ncurses mode
-	clear();
-	mvprintw(max_y / 2, max_x / 3, "Game Over!");
-	mvprintw(max_y / 2 + 1, max_x / 3, "Score: %ld", real_score/100000);
-	mvprintw(max_y / 2 + 2, max_x / 3, "Press any key to exit");
-	print_boder();
-	nodelay(stdscr, FALSE);
-	getch();
-    endwin();
-    if (resize_flag == 1) {
+	if (resize_flag == 1) {
         std::cerr << RED << "Resized! Don't do it again....." << RESET <<std::endl;
     }
-	if (player.getHP() <= 0) {
-        std::cerr << RED << "Game Over!" << RESET << std::endl;
-    }
+	else
+	{
+		clear();
+		mvprintw(max_y / 2, max_x / 3, "Game Over!");
+		mvprintw(max_y / 2 + 1, max_x / 3, "Score: %ld", real_score/100000);
+		mvprintw(max_y / 2 + 2, max_x / 3, "Press q to exit");
+		print_boder();
+		while(1)
+		{
+			int ch = getch();
+			if (ch == 'q' || ch == 'Q') {
+				break;}
+		}
+		endwin();
+	}
     return 0;
 }
 
