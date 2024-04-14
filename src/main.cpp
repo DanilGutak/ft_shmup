@@ -75,6 +75,20 @@ void check_for_enemy_hit_player(std::vector<Enemy> &enemies, Player &player, int
 		player.setInvincible(false);
 	}
 }
+void check_for_bullet_hit_player(std::vector<Bullet> &bullets, Player &player) {
+	for (unsigned long i = 0; i < bullets.size(); i++) {
+		if (player.check_collision(bullets[i].getX(), bullets[i].getY()) == true  && (score - player.get_score() > 1100000)) {
+			player.looseHP();
+			player.setInvincible(true);
+			player.set_score(score);
+			// bullets.erase(bullets.begin() + i);
+		}
+	}
+	if (score - player.get_score() > 1500000) {
+		player.setInvincible(false);
+	
+}
+}
 
 void print_boder() {
 	wattron(stdscr, COLOR_PAIR(1));
@@ -115,7 +129,7 @@ int main() {
     create_enemies(enemies);
 	create_backgrounds(backgrounds);
 	int ch1 = '1';
-    long difficulty = 300000;
+    long difficulty = 400000;
 	long ndifficulty = difficulty;
 	player.set_score(score);
     while (1 && player.getHP() > 0) {
@@ -124,11 +138,12 @@ int main() {
 		if (ch != -1) {
 			ch1 = ch;
 		}
-		if (score % ndifficulty == 0)
+		if (score % difficulty == 0)
 		{
 			werase(stdscr);
 			refresh();
-
+			if (enemies.size() < 10)
+				create_enemies(enemies);
 			move_backgrounds(backgrounds);
 			move_enemies(enemies, bullets);
 			print_boder();
@@ -164,6 +179,7 @@ int main() {
 				// if (i >= bullets.size()) {
 				// 	break;
 				// }
+				check_for_bullet_hit_player(bullets, player);
 				for (unsigned long j = 0; j < enemies.size(); j++) {
 					if (bullets[i].check_collision(enemies[j].getX(), enemies[j].getY())) {
 						if (enemies[j].getType() != 3) {
@@ -173,12 +189,12 @@ int main() {
 						break;
 					}
 				}
+				
 				if (i >= bullets.size()) {
 					break;
 				}
-				bullets[i].move();
 				bullets[i].print();
-			refresh();
+				bullets[i].move();
             }
 			attroff(COLOR_PAIR(1));
             ndifficulty = std::max(1L, static_cast<long>(difficulty * exp(-0.000000005 * score)));

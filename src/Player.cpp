@@ -4,25 +4,40 @@
 #include <cstdlib>
 
 void Player::move(int key) {
+	static int time;
+
+	if (key == 'w' || key == 's' || key == 'a' || key == 'd') {
+		time++;
+	}
+	else {
+		time = 0;
+	}
+	int speed = 1;
+	if (time >5 ) {
+		speed = 2;
+	}
+	if (time > 10) {
+		speed = 3;
+	}
 	switch (key) {
 		case 'w':
 			if (y > 1) {
-				y--;
+				y -= 1;
 			}
 			break;
 		case 's':
 			if (y < LINES - 2) {
-				y++;
+				y+= 1;
 			}
 			break;
 		case 'a':
 			if (x > 2) {
-				x--;
+				x-= 1;
 			}
 			break;
 		case 'd':
 			if (x < COLS - 2) {
-				x++;
+				x+= 1;
 			}
 			break;
 	}
