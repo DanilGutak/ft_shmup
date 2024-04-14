@@ -130,17 +130,9 @@ int main() {
 			refresh();
 
 			move_backgrounds(backgrounds);
-			move_enemies(enemies);
+			move_enemies(enemies, bullets);
 			print_boder();
-			if (player.getInvincible() == false)
-				mvprintw(player.getY(), player.getX(), "🚀");
-			else {
-				for (int i = 0; i < 200000; i++)
-					if (i % 100000 == 0)
-						mvprintw(player.getY(), player.getX(), " ");
-					else
-						mvprintw(player.getY(), player.getX(), "🚀");
-			}
+			mvprintw(player.getY(), player.getX(), "🚀");
 			for (int i = 0; i < max_y; i++) {
 				mvprintw(i, 1, " ");
 				mvprintw(i, max_x - 2, " ");
