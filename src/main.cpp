@@ -147,7 +147,7 @@ int main() {
     signal(SIGWINCH, handle_resize);
     std::vector<Enemy> enemies;
 	std::vector<Background> backgrounds;
-    create_enemies(enemies, max_y * max_x / 100);
+    create_enemies(enemies, max_y * max_x / 200);
 	create_backgrounds(backgrounds);
 	int ch1 = '1';
     long difficulty = 400000;
@@ -240,15 +240,25 @@ int main() {
 	else
 	{
 		clear();
-		mvprintw(max_y / 2, max_x / 3, "Game Over!");
+		if (player.getHP() == 0)
+			mvprintw(max_y / 2, max_x / 3, "Game Over!");
+		else if (player.getHP() > 0)
+			mvprintw(max_y / 2, max_x / 3, "You Quit! Why?!");
 		mvprintw(max_y / 2 + 1, max_x / 3, "Score: %ld", real_score/100000);
 		mvprintw(max_y / 2 + 2, max_x / 3, "Press q to exit");
+		mvprintw(max_y / 2 + 3, max_x / 3, "Press r to restart");
 		print_boder();
 		while(1)
 		{
 			int ch = getch();
 			if (ch == 'q' || ch == 'Q') {
 				break;}
+			else if (ch == 'r' || ch == 'R') {
+				system("clear");
+				system("make run");
+				break;
+			}
+			
 		}
 		endwin();
 	}

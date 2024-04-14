@@ -11,7 +11,12 @@ void shoot_bullet(std::vector<Bullet> &bullets, int x, int y, std::string who_sh
 void Bullet::print()
 {
 	if (y > 0)
-		mvprintw(y, x, "H");
+	{
+		if (this->who_shot == "player")
+			mvprintw(y, x, "🠵");
+		else
+			mvprintw(y, x, "❚");
+	}
 }
 
 void Bullet::move()

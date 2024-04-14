@@ -32,7 +32,7 @@ void Player::move(int key) {
 			}
 			break;
 		case 'a':
-			if (x + speed > 2) {
+			if (x - speed > 2) {
 				x-= 1 + speed;
 			}
 			break;
@@ -46,7 +46,6 @@ void Player::move(int key) {
 
 bool Player::check_collision(int x, int y) {
 	if (abs(this->x - x) <= 1 && this->y == y) {
-		// this->hp -= 1;
 		return true;
 	}
 	return false;
