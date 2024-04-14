@@ -23,7 +23,7 @@ void handle_resize(int sig) {
     resize_flag = 1;
 }
 
-void create_enemies(std::vector<Enemy> &enemies) {
+void create_enemies(std::vector<Enemy> &enemies, int number) {
     int i = 2;
     while (i < max_x - 2) {
 		int type = rand() % 4 + 1;
@@ -35,7 +35,7 @@ void create_enemies(std::vector<Enemy> &enemies) {
 			enemies.push_back(Enemy(i,(rand() % max_y) * -1, 3));
 		else if (type == 4)
 			enemies.push_back(Enemy(i,(rand() % max_y) * -1, 4));
-        i += max_x / 20;
+        i += max_x / number;
     }
 }
 void move_enemies(std::vector<Enemy> &enemies, std::vector<Bullet> &bullets) {
@@ -139,24 +139,23 @@ int main() {
     signal(SIGWINCH, handle_resize);
     std::vector<Enemy> enemies;
 	std::vector<Background> backgrounds;
-    create_enemies(enemies);
+    create_enemies(enemies, max_y * max_x / 100);
 	create_backgrounds(backgrounds);
 	int ch1 = '1';
     long difficulty = 400000;
 	long ndifficulty = difficulty;
 	player.set_score(score);
+	long real_score = 0;
     while (1 && player.getHP() > 0) {
         
         int ch = getch();
 		if (ch != -1) {
 			ch1 = ch;
 		}
-		if (score % difficulty == 0)
+		if (score % ndifficulty == 0)
 		{
 			werase(stdscr);
 			refresh();
-			if (enemies.size() < 10)
-				create_enemies(enemies);
 			move_backgrounds(backgrounds);
 			move_enemies(enemies, bullets);
 			print_boder();
@@ -169,11 +168,18 @@ int main() {
 			print_passed_time(start_time);
 			check_for_enemy_hit_player(enemies, player, score);
 			print_health(player.getHP());
-            mvprintw(1, 1, "Score: %ld", score);
-			mvprintw(2, 1, "diff: %ld", ndifficulty);
+            mvprintw(1, 1, "Score: %ld", real_score/100000);
+			if (ndifficulty > 300000)
+				mvprintw(2, 1, "Difficulty: Easy");
+			else if (ndifficulty > 200000)
+				mvprintw(2, 1, "Difficulty: Normal");
+			else if (ndifficulty > 100000)
+				mvprintw(2, 1, "Difficulty: Hard");
+			else
+				mvprintw(2, 1, "Difficulty: Insane");
 
+			player.move(ch1);
 			if (ch1 == 'w' || ch1 == 'a' || ch1 == 's' || ch1 == 'd') {
-				player.move(ch1);
                 ch1 = '1';
             }
 			if (ch1 == 'q' || resize_flag) {
@@ -196,7 +202,9 @@ int main() {
 				for (unsigned long j = 0; j < enemies.size(); j++) {
 					if (bullets[i].check_collision(enemies[j].getX(), enemies[j].getY())) {
 						if (enemies[j].getType() != 3) {
+							real_score += enemies[j].getType() * 10000000;
 							enemies.erase(enemies.begin() + j);
+							create_enemies(enemies, 1);
 						}
 						bullets.erase(bullets.begin() + i);
 						break;
@@ -214,8 +222,16 @@ int main() {
 		}
         // wbkgd(stdscr, COLOR_PAIR(1));
 		score++;
+		real_score++;
     }
     // End ncurses mode
+	clear();
+	mvprintw(max_y / 2, max_x / 3, "Game Over!");
+	mvprintw(max_y / 2 + 1, max_x / 3, "Score: %ld", real_score/100000);
+	mvprintw(max_y / 2 + 2, max_x / 3, "Press any key to exit");
+	print_boder();
+	nodelay(stdscr, FALSE);
+	getch();
     endwin();
     if (resize_flag == 1) {
         std::cerr << RED << "Resized! Don't do it again....." << RESET <<std::endl;

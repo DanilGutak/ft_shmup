@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 void Player::move(int key) {
-	static int time;
+	static int time = 0;
 
 	if (key == 'w' || key == 's' || key == 'a' || key == 'd') {
 		time++;
@@ -12,12 +12,13 @@ void Player::move(int key) {
 	else {
 		time = 0;
 	}
-	int speed = 1;
+	int speed = 0;
+
 	if (time >5 ) {
-		speed = 2;
+		speed = 1;
 	}
 	if (time > 10) {
-		speed = 3;
+		speed = 2;
 	}
 	switch (key) {
 		case 'w':
@@ -31,13 +32,13 @@ void Player::move(int key) {
 			}
 			break;
 		case 'a':
-			if (x > 2) {
-				x-= 1;
+			if (x + speed > 2) {
+				x-= 1 + speed;
 			}
 			break;
 		case 'd':
-			if (x < COLS - 2) {
-				x+= 1;
+			if (x + speed < COLS - 4) {
+				x+= 1 + speed;
 			}
 			break;
 	}
